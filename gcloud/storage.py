@@ -57,7 +57,13 @@ class CloudStorage:
                 project=project, credentials=credentials)
         self.bucket = self.client.bucket(bucket_name=bucket)
 
-        assert self.bucket.exists(), 'bucket is not exist.'
+    def bucket_exist(self) -> bool:
+        """
+
+        Returns:
+            bool
+        """
+        return self.bucket.exists()
 
     def upload_from_filename(self,
                              filename: Union[str, os.PathLike],
