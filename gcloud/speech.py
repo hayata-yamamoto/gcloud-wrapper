@@ -2,17 +2,16 @@ import io
 import os
 from typing import Union
 
-from google.cloud import speech_v1 as speech
-from google.cloud.speech import enums
 from google.api_core import exceptions
+from google.cloud.speech import SpeechClient, enums, types
 from google.oauth2.service_account import Credentials
 
 
-def parse_response(response: speech.types.RecognizeResponse) -> tuple:
+def parse_response(response: types.RecognizeResponse) -> tuple:
     """
 
     Args:
-        response (speech.types.RecognizeResponse) :
+        response (types.RecognizeResponse) :
 
     Returns:
         tuple : (transcript, confidence)
@@ -33,7 +32,7 @@ def recognize_audio_from_uri(uri: str,
                              language_code: str = 'en-US',
                              encoding: enums.RecognitionConfig.AudioEncoding = enums.RecognitionConfig.AudioEncoding.FLAC,
                              sampling_rate_hertz: int = 44100,
-                             ) -> speech.types.RecognizeResponse:
+                             ) -> types.RecognizeResponse:
     """
 
     Args:
@@ -44,22 +43,22 @@ def recognize_audio_from_uri(uri: str,
         sampling_rate_hertz (int) :
 
     Returns:
-        speech.types.RecognizeResponse
+        types.RecognizeResponse
     """
     if credential is None:
-        client = speech.SpeechClient()
+        client = SpeechClient()
     else:
         credentials = Credentials.from_service_account_file(
             filename=credential)
-        client = speech.SpeechClient(credentials=credentials)
+        client = SpeechClient(credentials=credentials)
 
-    config = speech.types.RecognitionConfig(
+    config = types.RecognitionConfig(
         encoding=encoding,
         language_code=language_code,
         sample_rate_hertz=sampling_rate_hertz
 
     )
-    audio = speech.types.RecognitionAudio(uri=uri)
+    audio = types.RecognitionAudio(uri=uri)
 
     try:
         result = client.recognize(config=config, audio=audio)
@@ -77,7 +76,7 @@ def recognize_audio_from_file(file: Union[str, os.PathLike],
                               language_code: str = 'en-US',
                               encoding: enums.RecognitionConfig.AudioEncoding = enums.RecognitionConfig.AudioEncoding.FLAC,
                               sampling_rate_hertz: int = 44100,
-                              ) -> speech.types.RecognizeResponse:
+                              ) -> types.RecognizeResponse:
     """
 
     Args:
@@ -88,23 +87,23 @@ def recognize_audio_from_file(file: Union[str, os.PathLike],
         sampling_rate_hertz (int) :
 
     Returns:
-        speech.types.RecognizeResponse
+        types.RecognizeResponse
     """
     if credential is None:
-        client = speech.SpeechClient()
+        client = SpeechClient()
     else:
         credentials = Credentials.from_service_account_file(
             filename=credential)
-        client = speech.SpeechClient(credentials=credentials)
+        client = SpeechClient(credentials=credentials)
 
-    config = speech.types.RecognitionConfig(
+    config = types.RecognitionConfig(
         encoding=encoding,
         language_code=language_code,
         sampling_rate_hertz=sampling_rate_hertz
     )
     with io.open(file, 'rb') as audio:
         content = audio.read()
-    audio = speech.types.RecognitionAudio(content=content)
+    audio = types.RecognitionAudio(content=content)
 
     return client.recognize(config, audio)
 
@@ -117,18 +116,18 @@ class SpeechToText:
             credential (str, os.PathLike, None) :
         """
         if credential is None:
-            self.client = speech.SpeechClient()
+            self.client = SpeechClient()
         else:
             credentials = Credentials.from_service_account_file(
                 filename=credential)
-            self.client = speech.SpeechClient(credentials=credentials)
+            self.client = SpeechClient(credentials=credentials)
 
     def recognize_from_uri(
             self,
             uri: str,
             encoding: enums.RecognitionConfig.AudioEncoding = enums.RecognitionConfig.AudioEncoding.FLAC,
             language_code: str = 'en-US',
-            sampling_rate_hertz: int = 44100) -> speech.types.RecognizeResponse:
+            sampling_rate_hertz: int = 44100) -> types.RecognizeResponse:
         """
 
         Args:
@@ -138,13 +137,13 @@ class SpeechToText:
             sampling_rate_hertz (int) :
 
         Returns:
-            speech.types.RecognizeResponse
+            types.RecognizeResponse
         """
-        config = speech.types.RecognitionConfig(
+        config = types.RecognitionConfig(
             encoding=encoding,
             language_code=language_code,
             sampling_rate_hertz=sampling_rate_hertz)
-        audio = speech.types.RecognitionAudio(uri=uri)
+        audio = types.RecognitionAudio(uri=uri)
 
         return self.client.recognize(config, audio)
 
@@ -153,7 +152,7 @@ class SpeechToText:
                                         os.PathLike],
                             encoding: enums.RecognitionConfig.AudioEncoding = enums.RecognitionConfig.AudioEncoding.FLAC,
                             language_code: str = 'en-US',
-                            sampling_rate_hertz: int = 44100) -> speech.types.RecognizeResponse:
+                            sampling_rate_hertz: int = 44100) -> types.RecognizeResponse:
         """
 
         Args:
@@ -163,14 +162,14 @@ class SpeechToText:
             sampling_rate_hertz (int) :
 
         Returns:
-            speech.types.RecognizeResponse
+            types.RecognizeResponse
         """
-        config = speech.types.RecognitionConfig(
+        config = types.RecognitionConfig(
             encoding=encoding,
             language_code=language_code,
             sampling_rate_hertz=sampling_rate_hertz)
         with io.open(file, 'rb') as audio:
             content = audio.read()
-        audio = speech.types.RecognitionAudio(content=content)
+        audio = types.RecognitionAudio(content=content)
         return self.client.recognize(config, audio)
 

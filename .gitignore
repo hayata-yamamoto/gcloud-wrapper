@@ -6,6 +6,8 @@
 # pycharm
 .idea/
 .idea
+/venv/
+
 
 # Packages
 *.egg
