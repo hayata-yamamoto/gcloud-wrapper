@@ -1,5 +1,5 @@
-import os
-from typing import Union
+from pathlib import Path
+from typing import Union, Optional
 
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
@@ -9,8 +9,7 @@ def load_from_cloud_storage_uri(source_uri: str,
                                 project: str,
                                 dataset: str,
                                 table: str,
-                                credential: Union[str,
-                                                  os.PathLike],
+                                credential: Optional[Union[str, Path]] = None,
                                 auto_detect: bool = True,
                                 skip_leading_rows: int = 1) -> bigquery.LoadJob:
     """
@@ -50,7 +49,7 @@ def load_from_cloud_storage_uri(source_uri: str,
 
 class BigQuery:
     def __init__(self, project: str, dataset: str,
-                 credential: Union[str, os.PathLike]):
+                 credential: Optional[Union[str, Path]] = None):
         """
 
         Args:

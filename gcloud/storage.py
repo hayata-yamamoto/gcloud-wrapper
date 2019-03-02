@@ -1,12 +1,12 @@
-import os
-from typing import Union
+from pathlib import Path
+from typing import Union, Optional
 
-from google.cloud import storage
+from google.cloud.storage import Client, Blob
 from google.oauth2.service_account import Credentials
 
 
 def _get_client(project: str,
-                credential: Union[str, None] = None) -> storage.Client:
+                credential: Optional[Union[str, Path]] = None) -> Client:
     """
 
     Args:
@@ -14,21 +14,21 @@ def _get_client(project: str,
         credential (str, None) :
 
     Returns:
-        storage.Client
+        Client
     """
     if credential is None:
-        return storage.Client(project=project)
+        return Client(project=project)
 
     credential = Credentials.from_service_account_file(filename=credential)
-    return storage.Client(project=project, credentials=credential)
+    return Client(project=project, credentials=credential)
 
 
-def upload_from_filename(filename: Union[str, os.PathLike],
+def upload_from_filename(filename: Union[str, Path],
                          project: str,
                          bucket: str,
                          blob: str,
-                         credential: Union[str, None] = None,
-                         content_type: Union[str, None] = None) -> str:
+                         credential: Optional[str] = None,
+                         content_type: Optional[str] = None) -> str:
     """
     Args:
         filename (str, os.PathLike) :
@@ -54,7 +54,7 @@ def download_from_blob(filename: str,
                        project: str,
                        bucket: str,
                        blob: str,
-                       credential: Union[str, None] = None):
+                       credential: Optional[Union[str, Path]] = None):
     """
 
     Args:
@@ -74,7 +74,7 @@ def download_from_blob(filename: str,
 
 class CloudStorage:
     def __init__(self, project: str, bucket: str,
-                 credential: Union[str, None] = None):
+                 credential: Optional[Union[str, Path]] = None):
         """
         Args:
             project (str) :
@@ -111,9 +111,9 @@ class CloudStorage:
         return self.bucket.blob(blob_name=blob).public_url
 
     def upload_from_filename(self,
-                             filename: Union[str, os.PathLike],
+                             filename: Union[str, Path],
                              blob: str,
-                             content_type: Union[str, None] = None) -> str:
+                             content_type: Optional[str] = None) -> str:
         """
         Args:
             filename (str, os.PathLike) :
@@ -122,12 +122,12 @@ class CloudStorage:
         Returns:
             str : public url
         """
-        blob = self.bucket.blob(blob_name=blob)
-        blob.upload_from_filename(
+        bl = self.bucket.blob(blob_name=blob)
+        bl.upload_from_filename(
             filename=filename,
             content_type=content_type,
             client=self.client)
-        return blob.public_url
+        return bl.public_url
 
     def download_from_blob(self, filename: str, blob: str) -> None:
         """
