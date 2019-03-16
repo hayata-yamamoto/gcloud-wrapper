@@ -30,7 +30,7 @@ jobs:
           command: |
             . venv/bin/activate
             mypy --allow-redefinition --ignore-missing-imports --disallow-untyped-defs --warn-redundant-casts --show-error-context \
-                          --no-incremental --no-implicit-optional --html-report ./report cyten/src/
+                          --no-incremental --no-implicit-optional --html-report ./report gloud/
 
       - store_artifacts:
           path: ./report
