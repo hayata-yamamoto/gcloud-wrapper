@@ -7,7 +7,7 @@
 .idea/
 .idea
 /venv/
-/gcloud/.mypy_cache/
+/.mypy_cache/
 
 
 # Packages
