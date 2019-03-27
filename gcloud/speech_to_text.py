@@ -48,8 +48,7 @@ def recognize_audio_from_uri(uri: str,
     if credential is None:
         client = SpeechClient()
     else:
-        credentials = Credentials.from_service_account_file(
-            filename=credential)
+        credentials = Credentials.from_service_account_file(filename=credential)
         client = SpeechClient(credentials=credentials)
 
     config = types.RecognitionConfig(
@@ -92,8 +91,7 @@ def recognize_audio_from_file(file: Union[str, os.PathLike],
     if credential is None:
         client = SpeechClient()
     else:
-        credentials = Credentials.from_service_account_file(
-            filename=credential)
+        credentials = Credentials.from_service_account_file(filename=credential)
         client = SpeechClient(credentials=credentials)
 
     config = types.RecognitionConfig(
@@ -118,8 +116,7 @@ class SpeechToText:
         if credential is None:
             self.client = SpeechClient()
         else:
-            credentials = Credentials.from_service_account_file(
-                filename=credential)
+            credentials = Credentials.from_service_account_file(filename=credential)
             self.client = SpeechClient(credentials=credentials)
 
     def recognize_from_uri(
@@ -148,8 +145,7 @@ class SpeechToText:
         return self.client.recognize(config, audio)
 
     def recognize_from_file(self,
-                            file: Union[str,
-                                        os.PathLike],
+                            file: Union[str, os.PathLike],
                             encoding: enums.RecognitionConfig.AudioEncoding = enums.RecognitionConfig.AudioEncoding.FLAC,
                             language_code: str = 'en-US',
                             sampling_rate_hertz: int = 44100) -> types.RecognizeResponse:
@@ -172,4 +168,3 @@ class SpeechToText:
             content = audio.read()
         audio = types.RecognitionAudio(content=content)
         return self.client.recognize(config, audio)
-
